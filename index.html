@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        row-gap: 1em;
+    }
+    canvas {
+      border: 1px solid black;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvasId" width="250px" height="250px">
+    This is fallback content if browser doesn't support canvas
+    <img src="some images" alt="">
+  </canvas>
+  <canvas id="canvasIdTwo" width="250px" height="250px"></canvas>
+  <canvas id="canvasIdThree" width="250px" height="250px"></canvas>
+
+  <script>
+    class Canvas {
+      constructor(selector) {
+        this.canvas = Canvas.getElement(selector);
+        this.drawables = [];
+        this.setUp = this.setUp.bind(this);
+        this.draw = this.draw.bind(this);
+      }
+
+      static getElement(selector) {
+        return document.querySelectorAll(selector)[0];
+      }
+
+      setUp(name, action) {
+        this.drawables.push({ name, action });
+        return this;
+      }
+
+      draw() {
+        this.drawables.forEach((drawable) => {
+          drawable.action(this.canvas.getContext('2d'), this.canvas)
+        });
+        return this;
+      }
+    }
+  </script>
+  <script>
+    new Canvas('#canvasId')
+      .setUp('diagonal line', (context) => {
+        context.moveTo(0, 0);
+        context.lineTo(200, 100);
+        context.stroke();
+      })
+      .setUp('circle', (context) => {
+        context.beginPath();
+        context.arc(95, 50, 40, 0, 2 * Math.PI);
+        context.stroke();
+      }) 
+      .draw();
+
+    new Canvas('#canvasIdTwo')
+      .setUp('circle', (context) => {
+        context.beginPath();
+        context.arc(95, 50, 40, 0, 2 * Math.PI);
+        context.stroke();
+      })
+      .setUp('Hello world text', (context) => {
+        context.font = '30px Arial';
+        context.fillText('Hello World',  25, 55);
+      })
+      .draw();
+
+      new Canvas('#canvasIdThree')
+       .setUp('path', (context) => {
+
+       })
+       .draw();
+  </script>
+</body>
+
+</html>
